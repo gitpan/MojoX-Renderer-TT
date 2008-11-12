@@ -7,9 +7,13 @@ use base 'Mojo::Base';
 use Template ();
 use Carp     ();
 
-__PACKAGE__->attr('tt', chained => 1,);
+our $VERSION = '0.10';
 
-sub new {
+__PACKAGE__->attr('tt', chained => 1);
+
+sub new { Carp::croak "MojoX::Renderer::TT->new() is now ->build()" }
+
+sub build {
     my $self = shift->SUPER::new(@_);
     $self->_init(@_);
     return sub { $self->_render(@_) }
@@ -44,31 +48,38 @@ sub _init {
 }
 
 sub _render {
-    my ($self, $mojo, $tx, $path, $args) = @_;
+    my ($self, $mojo, $args) = @_;
 
-    $args ||= {};
+    $args->{args} ||= {};
 
     #use Data::Dump qw(dump);
     #warn dump(\$args);
 
-    my $output;
-    unless ($self->tt->process($path, {%$args, tx => $tx}, \$output, {binmode => ":utf8"})) {
+    unless (
+        $self->tt->process(
+            $args->{path}, {%{$args->{args}}, c => $args->{c}},
+            $args->{output}, {binmode => ":utf8"}
+        )
+      )
+    {
         Carp::carp $self->tt->error . "\n";
-        return $self->tt->error;
+        return 0;
     }
     else {
-        return $output;
+        return 1;
     }
 }
+
+
+1;    # End of MojoX::Renderer::TT
+
+__END__
+
+=encoding utf-8
 
 =head1 NAME
 
 MojoX::Renderer::TT - Template Toolkit renderer for Mojo
-
-=cut
-
-our $VERSION = '0.02';
-
 
 =head1 SYNOPSIS
 
@@ -98,9 +109,9 @@ MojoX::Renderer::TT renderer.
 
 =head1 METHODS
 
-=head2 new
+=head2 build
 
-This method returns not a TT object, but a handler for the Mojo renderer.
+This method returns a handler for the Mojo renderer.
 
 Supported parameters are
 
@@ -123,11 +134,9 @@ Ask Bjørn Hansen, C<< <ask at develooper.com> >>
 
 =head1 TODO
 
-   * Rename C<new> to something more sensical?
    * Better support non-Mojolicious frameworks
    * Don't require the mojo parameter
    * Move the default template cache directory?
-   * Should the "tx" tpl parameter be called "c" (for context) instead?
    * Better way to pass parameters to the templates? (stash)
    * More sophisticated default search path?
 
@@ -146,18 +155,20 @@ You can find documentation for this module with the perldoc command.
 
     perldoc MojoX::Renderer::TT
 
-
 You can also look for information at:
 
 =over 4
 
+=item * git repository
+
+L<http://git.develooper.com/?p=MojoX-Renderer-TT.git;a=summary>,
+L<git://git.develooper.com/MojoX-Renderer-TT.git>
+
+L<http://github.com/abh/mojox-renderer-tt/>
+
 =item * RT: CPAN's request tracker
 
 L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=MojoX-Renderer-TT>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/MojoX-Renderer-TT>
 
 =item * CPAN Ratings
 
@@ -182,5 +193,3 @@ under the same terms as Perl itself.
 
 
 =cut
-
-1;    # End of MojoX::Renderer::TT
