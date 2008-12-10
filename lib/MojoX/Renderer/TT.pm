@@ -6,8 +6,9 @@ use base 'Mojo::Base';
 
 use Template ();
 use Carp     ();
+use File::Spec ();
 
-our $VERSION = '0.10';
+our $VERSION = '0.20';
 
 __PACKAGE__->attr('tt', chained => 1);
 
@@ -31,8 +32,9 @@ sub _init {
     #   take and process options :-)
 
     my %config = (
+        ( $mojo ? (INCLUDE_PATH => $mojo->home->rel_dir('templates') ) : () ),
         COMPILE_EXT => '.ttc',
-        COMPILE_DIR => ($dir || "/tmp"),
+        COMPILE_DIR => ($dir || File::Spec->tmpdir),
         UNICODE     => 1,
         ENCODING    => 'utf-8',
         CACHE_SIZE  => 128,
@@ -48,17 +50,14 @@ sub _init {
 }
 
 sub _render {
-    my ($self, $mojo, $args) = @_;
+    my ($self, $renderer, $c, $output) = @_;
 
-    $args->{args} ||= {};
-
-    #use Data::Dump qw(dump);
-    #warn dump(\$args);
+    my $template_path = $c->stash->{template_path};
 
     unless (
         $self->tt->process(
-            $args->{path}, {%{$args->{args}}, c => $args->{c}},
-            $args->{output}, {binmode => ":utf8"}
+            $template_path, {%{$c->stash}, c => $c},
+            $output, {binmode => ":utf8"}
         )
       )
     {
@@ -90,7 +89,7 @@ Add the handler:
     sub startup {
        ...
 
-       my $tt = MojoX::Renderer::TT->new(
+       my $tt = MojoX::Renderer::TT->build(
             mojo => $self,
             template_options =>
              { PROCESS => 'tpl/wrapper',

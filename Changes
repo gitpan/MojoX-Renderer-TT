@@ -1,5 +1,11 @@
 Revision history for MojoX-Renderer-TT
 
+0.20    December 9, 2008
+        - Updates to work with Mojo 0.9
+        - Add default INCLUDE_PATH
+        - Made default compile dir not Unix specific (Viacheslav
+          Tikhanovskii)
+
 0.10    November 12, 2008
         - Update to work with named parameters in new version of Mojo
         - Instead of "tx" pass the context in the "c" variable
