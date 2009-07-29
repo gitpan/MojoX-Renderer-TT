@@ -8,7 +8,7 @@ use Template ();
 use Carp     ();
 use File::Spec ();
 
-our $VERSION = '0.20';
+our $VERSION = '0.21';
 
 __PACKAGE__->attr('tt', chained => 1);
 
@@ -52,7 +52,7 @@ sub _init {
 sub _render {
     my ($self, $renderer, $c, $output) = @_;
 
-    my $template_path = $c->stash->{template_path};
+    my $template_path = $c->stash->{template};
 
     unless (
         $self->tt->process(
