@@ -8,11 +8,9 @@ use Template ();
 use Carp     ();
 use File::Spec ();
 
-our $VERSION = '0.30';
+our $VERSION = '0.31';
 
 __PACKAGE__->attr('tt');
-
-sub new { Carp::croak "MojoX::Renderer::TT->new() is now ->build()" }
 
 sub build {
     my $self = shift->SUPER::new(@_);
@@ -188,7 +186,7 @@ L<http://search.cpan.org/dist/MojoX-Renderer-TT/>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2008 Ask Bjørn Hansen, all rights reserved.
+Copyright 2008-2009 Ask Bjørn Hansen, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

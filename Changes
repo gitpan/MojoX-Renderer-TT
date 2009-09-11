@@ -1,6 +1,11 @@
 Revision history for MojoX-Renderer-TT
 
+0.31    September 11, 2009
+        - Remove deprecated 'new' method
+        - Update MANIFEST (oops, thanks Sebastian)
+
 0.30    September 9, 2009
+        - Revert the change of template_path stash key
         - Reflect recent changes in mojo project (v0.991251) (Sebastian Knapp)
         - One test with Mojolicious added (Sebastian Knapp)
 

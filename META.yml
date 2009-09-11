@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               MojoX-Renderer-TT
-version:            0.30
+version:            0.31
 abstract:           Template Toolkit renderer for Mojo
 author:
     - Ask Bjørn Hansen <ask@develooper.com>
