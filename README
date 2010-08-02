@@ -1,44 +1,107 @@
-MojoX-Renderer-TT
+NAME
+    MojoX::Renderer::TT - Template Toolkit renderer for Mojo
 
-This module implements a Template Toolkit renderer for the Mojo
-framework.
+SYNOPSIS
+    Add the handler:
 
-INSTALLATION
+        sub startup {
+            ...
 
-To install this module, run the following commands:
+            # Via mojolicious plugin
+            $self->plugin(tt_renderer => {FILTERS => [ ... ]});
 
-	perl Makefile.PL
-	make
-	make test
-	make install
+            # Or manually
+            use MojoX::Renderer::TT;
 
-SUPPORT AND DOCUMENTATION
+            my $tt = MojoX::Renderer::TT->build(
+                mojo => $self,
+                template_options => {
+                    PROCESS  => 'tpl/wrapper',
+                    FILTERS  => [ ... ],
+                    UNICODE  => 1,
+                    ENCODING => 'UTF-8',
+                }
+            );
 
-After installing, you can find documentation for this module with the
-perldoc command.
+            $self->renderer->add_handler( tt => $tt );
+        }
 
-    perldoc MojoX::Renderer::TT
+    Template parameter are taken from " $c-"stash >.
 
-You can also look for information at:
+RENDERING
+    The template file for "example/welcome" would be
+    "templates/welcome.html.tt".
 
-    Git repository
-        http://git.develooper.com/?p=MojoX-Renderer-TT.git;a=summary
-        git://git.develooper.com/MojoX-Renderer-TT.git
+    When template file is not available rendering from "__DATA__" is
+    attempted.
 
-    RT, CPAN's request tracker
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=MojoX-Renderer-TT
+        __DATA__
 
-    CPAN Ratings
-        http://cpanratings.perl.org/d/MojoX-Renderer-TT
+        @@ welcome.html.tt
+        Welcome, [% user.name %]!
 
-    Search CPAN
-        http://search.cpan.org/dist/MojoX-Renderer-TT/
+HELPERS
+    Helpers are exported automatically under "h" namespace.
 
+        [% h.url_for('index') %]
 
-COPYRIGHT AND LICENCE
+METHODS
+  build
+    This method returns a handler for the Mojolicious renderer.
 
-Copyright (C) 2008-2009 Ask Bjørn Hansen
+    Supported parameters are
 
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
+    mojo "build" currently uses a "mojo" parameter pointing to the base
+    class (Mojo). object. When used the INCLUDE_PATH will be set to
+    template_options
+        A hash reference of options that are passed to Template->new().
+
+AUTHOR
+    Ask Bjørn Hansen, "<ask at develooper.com>"
+
+TODO
+       * Better support non-Mojolicious frameworks
+       * Move the default template cache directory?
+       * Better way to pass parameters to the templates? (stash)
+       * More sophisticated default search path?
+
+BUGS
+    Please report any bugs or feature requests to "bug-mojox-renderer-tt at
+    rt.cpan.org", or through the web interface at
+    <http://rt.cpan.org/NoAuth/ReportBug.html?Queue=MojoX-Renderer-TT>. I
+    will be notified, and then you'll automatically be notified of progress
+    on your bug as I make changes.
+
+SUPPORT
+    You can find documentation for this module with the perldoc command.
+
+        perldoc MojoX::Renderer::TT
+
+    You can also look for information at:
+
+    *   git repository
+
+        <http://git.develooper.com/?p=MojoX-Renderer-TT.git;a=summary>,
+        <git://git.develooper.com/MojoX-Renderer-TT.git>
+
+        <http://github.com/abh/mojox-renderer-tt/>
+
+    *   RT: CPAN's request tracker
+
+        <http://rt.cpan.org/NoAuth/Bugs.html?Dist=MojoX-Renderer-TT>
+
+    *   CPAN Ratings
+
+        <http://cpanratings.perl.org/d/MojoX-Renderer-TT>
+
+    *   Search CPAN
+
+        <http://search.cpan.org/dist/MojoX-Renderer-TT/>
+
+ACKNOWLEDGEMENTS
+COPYRIGHT & LICENSE
+    Copyright 2008-2010 Ask Bjørn Hansen, all rights reserved.
+
+    This program is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
 
