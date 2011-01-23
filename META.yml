@@ -7,16 +7,17 @@ build_requires:
 configure_requires:
   ExtUtils::MakeMaker: 6.31
 dynamic_config: 0
-generated_by: 'Dist::Zilla version 4.101900, CPAN::Meta::Converter version 2.101670'
+generated_by: 'Dist::Zilla version 4.200000, CPAN::Meta::Converter version 2.101670'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: 1.4
 name: MojoX-Renderer-TT
 requires:
-  Mojo: 0.999926
+  Mojolicious: 1.01
   Template: 2.18
 resources:
+  bugtracker: http://rt.cpan.org/Public/Dist/Display.html?Name=MojoX-Renderer-TT
   homepage: http://search.cpan.org/dist/MojoX-Renderer-TT/
-  repository: http://git.develooper.com/MojoX-Renderer-TT.git
-version: 0.40
+  repository: git://github.com/abh/mojox-renderer-tt.git
+version: 1.0

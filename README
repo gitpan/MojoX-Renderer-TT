@@ -8,7 +8,7 @@ SYNOPSIS
             ...
 
             # Via mojolicious plugin
-            $self->plugin(tt_renderer => {FILTERS => [ ... ]});
+            $self->plugin(tt_renderer => {template_options => {FILTERS => [ ... ]}});
 
             # Or manually
             use MojoX::Renderer::TT;
@@ -39,6 +39,10 @@ RENDERING
 
         @@ welcome.html.tt
         Welcome, [% user.name %]!
+
+    Inline template is also supported:
+
+        $self->render(inline => '[% 1 + 1 %]', handler => 'tt');
 
 HELPERS
     Helpers are exported automatically under "h" namespace.

@@ -1,5 +1,14 @@
 Revision history for MojoX-Renderer-TT
 
+1.0     January 22, 2011
+        - Require (and be compatible with) Mojolicious 1.0+
+        - Added inline template support (Viacheslav Tykhanovskyi & Ask)
+        - Fix inline rendering and test failures (Marcus Ramberg)
+        - Fixed helper compatibility with Mojolicious 1.0 (Árpád Szász)
+        - Support new mojolicious error template (Marcus)
+        - Fix unicode test (Marcus & Spleenjack)
+        - Replaced deprecated Mojo dependence with Mojolicious (spleenjack)
+
 0.40    August 2, 2010
         - Updated for newer Mojo (Viacheslav Tykhanovskyi)
         - Added helpers (Viacheslav Tykhanovskyi)
@@ -22,15 +31,15 @@ Revision history for MojoX-Renderer-TT
         - Updates to work with Mojo 0.9
         - Add default INCLUDE_PATH
         - Made default compile dir not Unix specific (Viacheslav
-          Tikhanovskii)
+          Tykhanovskyi)
 
 0.10    November 12, 2008
         - Update to work with named parameters in new version of Mojo
         - Instead of "tx" pass the context in the "c" variable
         - Rename "new" to "build"
-        - Add real tests (Viacheslav Tikhanovskii)
+        - Add real tests (Viacheslav Tykhanovskyi)
         - Update to work with new error handling in Mojo
-          (Viacheslav Tikhanovskii)
+          (Viacheslav Tykhanovskyi)
 
 0.02    November 10, 2008
         - Add template_options parameter

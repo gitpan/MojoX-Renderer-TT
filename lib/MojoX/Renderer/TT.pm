@@ -1,6 +1,6 @@
 package MojoX::Renderer::TT;
 BEGIN {
-  $MojoX::Renderer::TT::VERSION = '0.40';
+  $MojoX::Renderer::TT::VERSION = '1.0';
 }
 
 use warnings;
@@ -8,8 +8,9 @@ use strict;
 
 use base 'Mojo::Base';
 
-use Template ();
 use File::Spec ();
+use Mojo::ByteStream 'b';
+use Template ();
 
 __PACKAGE__->attr('tt');
 
@@ -54,29 +55,36 @@ sub _init {
     return $self;
 }
 
+use Data::Dumper;
 sub _render {
     my ($self, $renderer, $c, $output, $options) = @_;
 
+    # Inline
+    my $inline = $options->{inline};
+
     # Template
-    return unless my $t    = $renderer->template_name($options);
-    return unless my $path = $renderer->template_path($options);
+    my $t = $renderer->template_name($options);
+    $t = 'inline' if defined $inline;
+    return unless $t;
+
+    # Path
+    my $path = $renderer->template_path($options);
+    $path = b($inline)->md5_sum->to_string if defined $inline;
+    return unless $path;
 
     my $helper = MojoX::Renderer::TT::Helper->new(ctx => $c);
 
     my @params = ({%{$c->stash}, c => $c, h => $helper}, $output, {binmode => ':utf8'});
     $self->tt->{SERVICE}->{CONTEXT}->{LOAD_TEMPLATES}->[0]->ctx($c);
-    my $ok = $self->tt->process($path, @params);
+
+    my $ok = $self->tt->process(defined $inline ? \$inline : $path, @params);
 
     # Error
     unless ($ok) {
-        my $e = $self->tt->error;
 
-        if ($e =~ m/not found/) {
-            $c->app->log->error(qq/Template "$t" missing or not readable./);
-            $c->render_not_found;
-            return;
-        }
-
+        my $e = Mojo::Exception->new(
+            $self->tt->error.'',
+            $self->tt->service->process(defined $inline ? \$inline : $path));
         $$output = '';
         $c->app->log->error(qq/Template error in "$t": $e/);
         $c->render_exception($e);
@@ -112,9 +120,9 @@ sub AUTOLOAD {
 
     $method = (split '::' => $method)[-1];
 
-    die qq/Unknown helper: $method/ unless $self->ctx->app->renderer->helper->{$method};
+    die qq/Unknown helper: $method/ unless $self->ctx->app->renderer->helpers->{$method};
 
-    return $self->ctx->helper($method => @_);
+    return $self->ctx->$method(@_);
 }
 
 1;
@@ -182,7 +190,7 @@ Add the handler:
         ...
 
         # Via mojolicious plugin
-        $self->plugin(tt_renderer => {FILTERS => [ ... ]});
+        $self->plugin(tt_renderer => {template_options => {FILTERS => [ ... ]}});
 
         # Or manually
         use MojoX::Renderer::TT;
@@ -212,6 +220,10 @@ When template file is not available rendering from C<__DATA__> is attempted.
 
     @@ welcome.html.tt
     Welcome, [% user.name %]!
+
+Inline template is also supported:
+
+    $self->render(inline => '[% 1 + 1 %]', handler => 'tt');
 
 =head1 HELPERS
 
