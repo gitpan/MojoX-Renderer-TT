@@ -1,6 +1,6 @@
 package MojoX::Renderer::TT;
 BEGIN {
-  $MojoX::Renderer::TT::VERSION = '1.0';
+  $MojoX::Renderer::TT::VERSION = '1.10';
 }
 
 use warnings;
@@ -73,6 +73,9 @@ sub _render {
     return unless $path;
 
     my $helper = MojoX::Renderer::TT::Helper->new(ctx => $c);
+
+    # Purge previous result
+    $$output = '';
 
     my @params = ({%{$c->stash}, c => $c, h => $helper}, $output, {binmode => ':utf8'});
     $self->tt->{SERVICE}->{CONTEXT}->{LOAD_TEMPLATES}->[0]->ctx($c);
@@ -155,7 +158,7 @@ sub _template_content {
     my $self = shift;
     my ($path) = @_;
 
-    my ($t) = ($path =~ m{templates\/(.*)$});
+    my ($t) = ($path =~ m{templates[\/|\\](.*)$});
 
     if (-r $path) {
         return $self->SUPER::_template_content(@_);
