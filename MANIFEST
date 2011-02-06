@@ -17,6 +17,7 @@ t/release-dist-manifest.t
 t/release-distmeta.t
 t/release-has-version.t
 t/release-pod-coverage.t
+t/templates/exception.testing.html.ep
 t/templates/foo.html.tt
 t/templates/index.html.tt
 t/tt_plugin_lite_app.t

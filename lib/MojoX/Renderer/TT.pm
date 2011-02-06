@@ -1,6 +1,6 @@
 package MojoX::Renderer::TT;
 BEGIN {
-  $MojoX::Renderer::TT::VERSION = '1.10';
+  $MojoX::Renderer::TT::VERSION = '1.11';
 }
 
 use warnings;
@@ -11,6 +11,7 @@ use base 'Mojo::Base';
 use File::Spec ();
 use Mojo::ByteStream 'b';
 use Template ();
+use Cwd qw/abs_path/;
 
 __PACKAGE__->attr('tt');
 
@@ -34,14 +35,13 @@ sub _init {
     #   take and process options :-)
 
     my %config = (
-        ($app ? (INCLUDE_PATH => $app->home->rel_dir('templates')) : ()),
+        ($app ? (INCLUDE_PATH => abs_path($app->home->rel_dir('templates'))) : ()),
         COMPILE_EXT => '.ttc',
-        COMPILE_DIR => ($dir || File::Spec->tmpdir),
+        COMPILE_DIR => ($dir || abs_path(File::Spec->tmpdir)),
         UNICODE     => 1,
         ENCODING    => 'utf-8',
         CACHE_SIZE  => 128,
         RELATIVE    => 1,
-        ABSOLUTE    => 1,
         %{$args{template_options} || {}},
     );
 
@@ -55,7 +55,6 @@ sub _init {
     return $self;
 }
 
-use Data::Dumper;
 sub _render {
     my ($self, $renderer, $c, $output, $options) = @_;
 
@@ -67,10 +66,6 @@ sub _render {
     $t = 'inline' if defined $inline;
     return unless $t;
 
-    # Path
-    my $path = $renderer->template_path($options);
-    $path = b($inline)->md5_sum->to_string if defined $inline;
-    return unless $path;
 
     my $helper = MojoX::Renderer::TT::Helper->new(ctx => $c);
 
@@ -80,14 +75,14 @@ sub _render {
     my @params = ({%{$c->stash}, c => $c, h => $helper}, $output, {binmode => ':utf8'});
     $self->tt->{SERVICE}->{CONTEXT}->{LOAD_TEMPLATES}->[0]->ctx($c);
 
-    my $ok = $self->tt->process(defined $inline ? \$inline : $path, @params);
+    my $ok = $self->tt->process(defined $inline ? \$inline : $t, @params);
 
     # Error
     unless ($ok) {
 
         my $e = Mojo::Exception->new(
             $self->tt->error.'',
-            $self->tt->service->process(defined $inline ? \$inline : $path));
+            $self->tt->service->process(defined $inline ? \$inline : $t));
         $$output = '';
         $c->app->log->error(qq/Template error in "$t": $e/);
         $c->render_exception($e);
