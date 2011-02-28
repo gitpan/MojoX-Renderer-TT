@@ -1,5 +1,9 @@
 Revision history for MojoX-Renderer-TT
 
+1.12    February 28, 2011
+        - Inline wrappers and includes now work on Windows
+          (GH#13, Christiaan Kras)
+
 1.11    February 6, 2011
         - Change to use relative paths (Marcus Ramberg)
         - Add exception template for tests
