@@ -14,10 +14,10 @@ meta-spec:
   version: 1.4
 name: MojoX-Renderer-TT
 requires:
-  Mojolicious: 1.01
+  Mojolicious: 1.3
   Template: 2.18
 resources:
   bugtracker: https://github.com/abh/mojox-renderer-tt/issues
   homepage: http://search.cpan.org/dist/MojoX-Renderer-TT/
   repository: git://github.com/abh/mojox-renderer-tt.git
-version: 1.12
+version: 1.13
